@@ -1,7 +1,18 @@
 "use server";
 
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+
+async function getSiteOrigin(): Promise<string> {
+  const headersList = await headers();
+  const host = await headersList.get("x-forwarded-host") ?? await headersList.get("host");
+  const proto = await headersList.get("x-forwarded-proto") ?? "https";
+  if (host) {
+    return `${proto}://${host}`;
+  }
+  return process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+}
 
 export type AuthState = {
   error?: string;
@@ -36,7 +47,7 @@ export async function register(_prevState: AuthState, formData: FormData): Promi
     email,
     password,
     options: {
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/login`,
+      emailRedirectTo: `${await getSiteOrigin()}/login`,
     },
   });
 
