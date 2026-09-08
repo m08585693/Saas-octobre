@@ -16,7 +16,6 @@ async function getSiteOrigin(): Promise<string> {
 
 export type AuthState = {
   error?: string;
-  success?: boolean;
 };
 
 export async function login(_prevState: AuthState, formData: FormData): Promise<AuthState> {
@@ -46,16 +45,13 @@ export async function register(_prevState: AuthState, formData: FormData): Promi
   const { error } = await supabase.auth.signUp({
     email,
     password,
-    options: {
-      emailRedirectTo: `${await getSiteOrigin()}/login`,
-    },
   });
 
   if (error) {
     return { error: error.message };
   }
 
-  return { success: true };
+  redirect("/dashboard");
 }
 
 export async function logout() {

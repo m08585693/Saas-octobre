@@ -19,7 +19,6 @@ export default function RegisterForm() {
       footerHref="/login"
       footerLinkLabel="Se connecter"
       registerMode
-      success={state?.success}
     />
   );
 }
