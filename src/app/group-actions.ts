@@ -40,6 +40,7 @@ export async function joinGroup(formData: FormData) {
   }
 
   revalidatePath("/groups");
+  revalidatePath("/dashboard");
   redirect(`/dashboard?group=${groupId}`);
 }
 
