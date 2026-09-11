@@ -115,7 +115,7 @@ export default function GroupsExplorer({
 
               {joined ? (
                 <Link
-                  href={`/dashboard?group=${g.id}`}
+                  href={`/groups/${g.id}`}
                   className="flex shrink-0 items-center gap-1.5 rounded-full border border-[#3E3E4E] bg-[#12121B] px-5 py-2.5 text-sm font-medium text-white transition-all hover:border-violet-400/70 hover:shadow-[0_0_14px_rgba(139,92,246,0.2)]"
                 >
                   Rejoint ✓

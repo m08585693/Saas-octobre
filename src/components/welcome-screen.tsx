@@ -16,16 +16,25 @@ import {
 } from "lucide-react";
 import { logout } from "@/app/actions";
 
+type WelcomeGroup = {
+  id: string;
+  name: string;
+  streak: number;
+  rank: number | null;
+};
+
 type WelcomeScreenProps = {
   displayName: string;
   handle: string;
   initials: string;
+  groups?: WelcomeGroup[];
 };
 
 export default function WelcomeScreen({
   displayName,
   handle,
   initials,
+  groups = [],
 }: WelcomeScreenProps) {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -159,6 +168,57 @@ export default function WelcomeScreen({
             >
               Comment souhaites-tu commencer ton aventure aujourd&apos;hui ?
             </motion.p>
+
+            {/* Mes groupes : affichés quand un groupe existe */}
+            {groups.length > 0 && (
+              <motion.div
+                variants={item}
+                className="mt-10 w-full text-left"
+              >
+                <div className="mb-4 flex items-center justify-between">
+                  <h2 className="font-display text-lg font-bold tracking-tight text-white">
+                    Mes groupes
+                  </h2>
+                  <Link
+                    href="/groups"
+                    className="flex items-center gap-1.5 text-xs font-medium text-[#A1A1AA] transition-colors hover:text-white"
+                  >
+                    <Plus className="size-3.5" />
+                    Rejoindre d&apos;autres groupes
+                  </Link>
+                </div>
+                <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2">
+                  {groups.map((g) => (
+                    <Link
+                      key={g.id}
+                      href={`/groups/${g.id}`}
+                      className="group flex flex-col rounded-[16px] border border-[#232334] bg-[#0F0F16]/70 p-5 backdrop-blur transition-all hover:border-violet-400/60 hover:shadow-[0_0_28px_rgba(139,92,246,0.16)]"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="flex size-8 shrink-0 items-center justify-center rounded-[10px] bg-[#191926] text-xs font-bold text-white transition-colors group-hover:bg-gradient-to-br group-hover:from-violet-500 group-hover:to-blue-500">
+                          {g.name.slice(0, 2).toUpperCase()}
+                        </span>
+                        <p className="truncate text-sm font-semibold text-white">
+                          {g.name}
+                        </p>
+                      </div>
+                      <div className="mt-4 flex items-center gap-4 text-xs font-medium text-[#A1A1AA]">
+                        <span className="flex items-center gap-1.5">
+                          <Flame className="size-3.5 text-orange-400" />
+                          {g.streak} j
+                        </span>
+                        <span className="flex items-center gap-1.5">
+                          Rang{" "}
+                          <span className="font-bold text-white">
+                            {g.rank ? `#${g.rank}` : "—"}
+                          </span>
+                        </span>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </motion.div>
+            )}
 
             {/* Les 2 cartes de choix */}
             <motion.div

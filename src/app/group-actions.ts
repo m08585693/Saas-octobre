@@ -41,7 +41,7 @@ export async function joinGroup(formData: FormData) {
 
   revalidatePath("/groups");
   revalidatePath("/dashboard");
-  redirect(`/dashboard?group=${groupId}`);
+  redirect("/dashboard");
 }
 
 const CATEGORIES = [
@@ -112,7 +112,7 @@ export async function createGroup(formData: FormData) {
 
   revalidatePath("/groups");
   revalidatePath("/dashboard");
-  redirect(`/dashboard?group=${created.id}`);
+  redirect("/dashboard");
 }
 
 export async function checkIn(formData: FormData) {
@@ -139,7 +139,7 @@ export async function checkIn(formData: FormData) {
 
   // Déjà check-in aujourd'hui : on ne fait rien
   if (membership.last_check_in === today) {
-    redirect(`/dashboard?group=${groupId}`);
+    redirect(`/groups/${groupId}`);
   }
 
   let newStreak: number;
@@ -155,6 +155,6 @@ export async function checkIn(formData: FormData) {
     .update({ streak_count: newStreak, last_check_in: today })
     .eq("id", membership.id);
 
-  revalidatePath("/dashboard");
-  redirect(`/dashboard?group=${groupId}`);
+  revalidatePath(`/groups/${groupId}`);
+  redirect(`/groups/${groupId}`);
 }
