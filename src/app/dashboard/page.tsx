@@ -37,9 +37,14 @@ export default async function DashboardPage({
   // Nouveau compte : écran de bienvenue / onboarding
   if (myGroups.length === 0) {
     const emailLocal = (user.email ?? "").split("@")[0] ?? "toi";
+    const metaName =
+      typeof user.user_metadata?.full_name === "string" &&
+      user.user_metadata.full_name.trim()
+        ? user.user_metadata.full_name.trim()
+        : "";
     const displayName =
-      emailLocal.charAt(0).toUpperCase() + emailLocal.slice(1);
-    const initials = emailLocal.slice(0, 2).toUpperCase();
+      metaName || emailLocal.charAt(0).toUpperCase() + emailLocal.slice(1);
+    const initials = (metaName || emailLocal).slice(0, 2).toUpperCase();
     return (
       <WelcomeScreen
         displayName={displayName || "toi"}
