@@ -7,16 +7,16 @@ import type { LucideIcon } from "lucide-react";
 import {
   ArrowRight,
   BatteryLow,
-  BookOpen,
+  Brain,
   Check,
   Dumbbell,
+  Feather,
   Flame,
   RefreshCcw,
-  Sprout,
+  Repeat,
+  Rocket,
+  Smartphone,
   Target,
-  Trophy,
-  Waves,
-  Zap,
 } from "lucide-react";
 
 type Option = {
@@ -32,27 +32,27 @@ type Step = {
 
 const STEPS: Step[] = [
   {
-    question: "Ton objectif principal pour ce Winter Arc ?",
+    question: "Quel est ton plus grand frein actuel ?",
     options: [
-      { id: "mass", label: "Prise de masse", icon: Dumbbell },
-      { id: "cut", label: "Séche", icon: Flame },
-      { id: "discipline", label: "Discipline", icon: Target },
+      { id: "regularity", label: "Manque de régularité", icon: Repeat },
+      { id: "distractions", label: "Distractions", icon: Smartphone },
+      { id: "motivation", label: "Baisse de motivation", icon: BatteryLow },
     ],
   },
   {
-    question: "Ton niveau actuel en nutrition ?",
+    question: "Quel niveau de discipline vises-tu pour ce Winter Arc ?",
     options: [
-      { id: "beginner", label: "Je débute", icon: Sprout },
-      { id: "intermediate", label: "Je me débrouille", icon: BookOpen },
-      { id: "advanced", label: "Je suis rigoureux", icon: Trophy },
+      { id: "light", label: "Je commence doucement", icon: Feather },
+      { id: "solid", label: "Je suis sérieux", icon: Target },
+      { id: "all-in", label: "Je donne tout", icon: Flame },
     ],
   },
   {
-    question: "Ton niveau de motivation en ce moment ?",
+    question: "Quelle est ta priorité quotidienne ?",
     options: [
-      { id: "low", label: "Au plus bas", icon: BatteryLow },
-      { id: "wavy", label: "En dents de scie", icon: Waves },
-      { id: "high", label: "Au top", icon: Zap },
+      { id: "sport", label: "Défis sportifs", icon: Dumbbell },
+      { id: "projects", label: "Avancer sur mes projets", icon: Rocket },
+      { id: "mindset", label: "Travailler mon mental", icon: Brain },
     ],
   },
 ];

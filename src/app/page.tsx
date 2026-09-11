@@ -2,10 +2,11 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowRight,
+  BarChart3,
   CalendarCheck,
   CheckCircle2,
   Flame,
-  Salad,
+  Sunrise,
   Zap,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
@@ -69,8 +70,8 @@ export default async function HomePage() {
             Construis ton Winter Arc sur-mesure
           </h1>
           <p className="mx-auto mt-4 max-w-md text-center text-base text-[#A1A1AA] sm:text-lg">
-            Réponds à 3 questions. On te branche sur le bon plan de discipline,
-            nutrition et motivation.
+            Réponds à 3 questions. On te construit ton plan de discipline, de
+            rituels et de motivation sur-mesure.
           </p>
 
           <div className="mt-10 w-full">
@@ -116,7 +117,7 @@ export default async function HomePage() {
                   <p className="mb-2 px-2 text-[11px] font-medium uppercase tracking-wider text-[#A1A1AA]">
                     Mes groupes
                   </p>
-                  {["Running — 10 km", "Nutrition", "Lecture"].map((g, i) => (
+                  {["Running — 10 km", "Écriture", "Lecture"].map((g, i) => (
                     <div
                       key={g}
                       className={`flex items-center justify-between rounded-[8px] px-3 py-2 text-xs ${
@@ -189,20 +190,21 @@ export default async function HomePage() {
           className="mx-auto w-full max-w-5xl px-6 pb-24 pt-4"
         >
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {/* Nutrition — grande carte */}
+            {/* Boost & rituels — grande carte */}
             <div className="rounded-[16px] border border-[#232334] bg-[#0F0F16]/70 p-6 backdrop-blur transition-colors hover:border-[#3E3E4E] md:col-span-2">
-              <div className="flex size-10 items-center justify-center rounded-full bg-blue-500/15">
-                <Salad className="size-5 text-blue-400" />
+              <div className="flex size-10 items-center justify-center rounded-full bg-violet-500/15">
+                <Sunrise className="size-5 text-violet-400" />
               </div>
               <h3 className="mt-4 font-display text-lg font-bold text-white">
-                Suivi nutrition strict & plan repas
+                Boost & rituels de motivation quotidiens
               </h3>
               <p className="mt-2 text-sm text-[#A1A1AA]">
-                Un plan repas adapté à ton objectif de prise de masse ou de
-                séche, et un suivi quotidien qui tient.
+                Un rituel chaque matin, une dose de motivation, et ton groupe
+                qui veille sur ta série. Personne ne veut l&apos;abandonner —
+                c&apos;est fait exprès.
               </p>
               <div className="mt-5 flex flex-wrap gap-2">
-                {["Protéines", "Calories", "Hydratation"].map((t) => (
+                {["Rituel matin", "Citation du jour", "Défis hebdo"].map((t) => (
                   <span
                     key={t}
                     className="rounded-full border border-[#232334] bg-[#12121B] px-3 py-1 text-xs text-[#A1A1AA]"
@@ -213,36 +215,16 @@ export default async function HomePage() {
               </div>
             </div>
 
-            {/* Motivation */}
-            <div className="rounded-[16px] border border-[#232334] bg-[#0F0F16]/70 p-6 backdrop-blur transition-colors hover:border-[#3E3E4E]">
-              <div className="flex size-10 items-center justify-center rounded-full bg-violet-500/15">
-                <Zap className="size-5 text-violet-400" fill="currentColor" />
-              </div>
-              <h3 className="mt-4 font-display text-lg font-bold text-white">
-                Boost de motivation quotidien
-              </h3>
-              <p className="mt-2 text-sm text-[#A1A1AA]">
-                Ton groupe voit si tu lâches. C&apos;est fait exprès : personne
-                ne veut casser la série.
-              </p>
-              <div className="mt-5 flex items-center gap-2">
-                <div className="flex h-1.5 flex-1 overflow-hidden rounded-full bg-[#232334]">
-                  <div className="w-3/4 rounded-full bg-gradient-to-r from-violet-500 to-blue-500" />
-                </div>
-                <span className="text-xs font-semibold text-white">17 j</span>
-              </div>
-            </div>
-
-            {/* Discipline */}
+            {/* Tracker discipline */}
             <div className="rounded-[16px] border border-[#232334] bg-[#0F0F16]/70 p-6 backdrop-blur transition-colors hover:border-[#3E3E4E]">
               <div className="flex size-10 items-center justify-center rounded-full bg-emerald-500/15">
                 <CheckCircle2 className="size-5 text-emerald-400" />
               </div>
               <h3 className="mt-4 font-display text-lg font-bold text-white">
-                Tracker discipline & habitudes
+                Tracker de discipline & habitudes strict
               </h3>
               <p className="mt-2 text-sm text-[#A1A1AA]">
-                Check-in chaque jour, le classement te place et la série te
+                Check-in chaque jour. Le classement te place, la série te
                 retient.
               </p>
               <div className="mt-5 flex items-center gap-2">
@@ -251,6 +233,37 @@ export default async function HomePage() {
                 <span className="text-xs font-semibold text-white">
                   12 jours
                 </span>
+              </div>
+            </div>
+
+            {/* Dashboard progression */}
+            <div className="rounded-[16px] border border-[#232334] bg-[#0F0F16]/70 p-6 backdrop-blur transition-colors hover:border-[#3E3E4E]">
+              <div className="flex size-10 items-center justify-center rounded-full bg-blue-500/15">
+                <BarChart3 className="size-5 text-blue-400" />
+              </div>
+              <h3 className="mt-4 font-display text-lg font-bold text-white">
+                Dashboard de progression & objectifs Winter Arc
+              </h3>
+              <p className="mt-2 text-sm text-[#A1A1AA]">
+                Vois ta progression semaine après semaine et tiens ton objectif
+                jusqu&apos;au bout.
+              </p>
+              <div className="mt-5 flex flex-col gap-2">
+                {[
+                  { label: "Régularité", value: "w-3/4" },
+                  { label: "Objectif saison", value: "w-1/2" },
+                ].map((p) => (
+                  <div key={p.label} className="flex items-center gap-2">
+                    <span className="w-24 text-xs text-[#A1A1AA]">
+                      {p.label}
+                    </span>
+                    <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[#232334]">
+                      <div
+                        className={`h-full rounded-full bg-gradient-to-r from-violet-500 to-blue-500 ${p.value}`}
+                      />
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
