@@ -184,7 +184,7 @@ export default function WelcomeScreen({
                   et tes règles pour ce Winter Arc.
                 </p>
                 <Link
-                  href="/dashboard"
+                  href="/create"
                   className="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-violet-500 to-blue-500 px-5 py-3 text-sm font-semibold text-white shadow-[0_0_20px_rgba(139,92,246,0.35)] transition-all hover:from-violet-400 hover:to-blue-400"
                 >
                   Configurer mon objectif
