@@ -3,6 +3,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { checkIn } from "@/app/group-actions";
 import { logout } from "@/app/actions";
+import WelcomeScreen from "@/components/welcome-screen";
 
 type SearchParams = Promise<{ group?: string }>;
 
@@ -32,6 +33,21 @@ export default async function DashboardPage({
     name: m.groups.name,
     streak: m.streak_count,
   }));
+
+  // Nouveau compte : écran de bienvenue / onboarding
+  if (myGroups.length === 0) {
+    const emailLocal = (user.email ?? "").split("@")[0] ?? "toi";
+    const displayName =
+      emailLocal.charAt(0).toUpperCase() + emailLocal.slice(1);
+    const initials = emailLocal.slice(0, 2).toUpperCase();
+    return (
+      <WelcomeScreen
+        displayName={displayName || "toi"}
+        handle={emailLocal}
+        initials={initials}
+      />
+    );
+  }
 
   // Si le groupe sélectionné n'est pas valide (absent, supprimé), on repart vide
   const selected = myGroups.find((g) => g.id === selectedId);
