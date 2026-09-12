@@ -67,6 +67,11 @@ export default function GroupDetailView({
   const [copied, setCopied] = useState(false);
   const [shared, setShared] = useState(false);
 
+  function getInviteUrl() {
+    if (inviteUrl) return inviteUrl;
+    return `${window.location.origin}/invite/${currentUserId}`;
+  }
+
   useEffect(() => {
     if (!copied && !shared) return;
     const t = setTimeout(() => {
@@ -78,7 +83,7 @@ export default function GroupDetailView({
 
   async function copyInvite() {
     try {
-      await navigator.clipboard.writeText(inviteUrl);
+      await navigator.clipboard.writeText(getInviteUrl());
       setCopied(true);
     } catch {
       // Presse-papier indisponible : on ignore
@@ -86,12 +91,13 @@ export default function GroupDetailView({
   }
 
   async function shareInvite() {
+    const url = getInviteUrl();
     if (typeof navigator.share === "function") {
       try {
         await navigator.share({
           title: name,
           text: `Rejoins mon Winter Arc « ${name} » : restons disciplinés ensemble.`,
-          url: inviteUrl,
+          url,
         });
         setShared(true);
       } catch {
@@ -211,8 +217,7 @@ export default function GroupDetailView({
           <button
             type="button"
             onClick={copyInvite}
-            disabled={!inviteUrl}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-[#3E3E4E] bg-[#12121B] px-4 py-2.5 text-sm font-semibold text-white transition-all hover:border-violet-400/70 hover:bg-[#191926] disabled:opacity-50"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-[#3E3E4E] bg-[#12121B] px-4 py-2.5 text-sm font-semibold text-white transition-all hover:border-violet-400/70 hover:bg-[#191926]"
           >
             <Gift className="size-4 text-violet-400" />
             {copied ? "Lien copié !" : "Copier mon lien d'invitation"}
@@ -220,8 +225,7 @@ export default function GroupDetailView({
           <button
             type="button"
             onClick={shareInvite}
-            disabled={!inviteUrl}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-violet-500 to-blue-500 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_0_20px_rgba(139,92,246,0.25)] transition-all hover:from-violet-400 hover:to-blue-400 disabled:opacity-50"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-violet-500 to-blue-500 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_0_20px_rgba(139,92,246,0.25)] transition-all hover:from-violet-400 hover:to-blue-400"
           >
             <Share2 className="size-4" />
             Partager mon lien d&apos;invitation

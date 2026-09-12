@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { motion, type Variants } from "framer-motion";
 import {
   ArrowRight,
+  Crown,
   LogOut,
   Plus,
   Target,
@@ -88,6 +89,7 @@ export default function DashboardShell({
 
   // Plan gratuit : une seule groupe autorisé
   const isFree = plan !== "pro";
+  const isPro = !isFree;
   const groupLimitReached = isFree && groups.length >= 1;
 
   // Modals badges / paywall
@@ -260,7 +262,15 @@ export default function DashboardShell({
                 </span>
               )}
             </button>
-            <BrandLogo withIcon={false} className="hidden sm:inline-flex" />
+            <BrandLogo className="min-w-0" />
+            {isPro && (
+              <span
+                title="Plan Pro"
+                className="flex size-5 shrink-0 items-center justify-center rounded-full bg-amber-400/10 shadow-[0_0_10px_rgba(251,191,36,0.4)]"
+              >
+                <Crown className="size-3.5 text-amber-400" fill="currentColor" />
+              </span>
+            )}
           </div>
 
           <div className="flex items-center gap-2 sm:gap-2.5">
