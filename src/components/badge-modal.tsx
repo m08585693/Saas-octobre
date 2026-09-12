@@ -2,12 +2,14 @@
 
 import { motion } from "framer-motion";
 import { Award, X } from "lucide-react";
+import { BADGE_LABELS } from "@/lib/arc";
 
 type BadgeModalProps = {
+  days?: number;
   onClose: () => void;
 };
 
-export default function BadgeModal({ onClose }: BadgeModalProps) {
+export default function BadgeModal({ days = 7, onClose }: BadgeModalProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div
@@ -44,7 +46,9 @@ export default function BadgeModal({ onClose }: BadgeModalProps) {
         </h2>
         <p className="mt-2 text-sm leading-relaxed text-[#A1A1AA]">
           Tu viens de valider{" "}
-          <span className="font-semibold text-amber-400">7 jours</span>{" "}
+          <span className="font-semibold text-amber-400">
+            {BADGE_LABELS[days] ?? `${days} jours`}
+          </span>{" "}
           consécutifs. Ta discipline commence à faire des étincelles 🏆
         </p>
 

@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { BADGE_TIERS, FREEZES_PER_MONTH } from "@/lib/arc";
 
 type SupabaseLike = Awaited<ReturnType<typeof createClient>>;
 
@@ -195,12 +196,39 @@ export async function checkIn(formData: FormData) {
     redirect(`/dashboard?group=${groupId}`);
   }
 
+  // Jokers de freeze : 2 par mois, consommation automatique en cas de jour manqué
+  const month = today.slice(0, 7);
+  const { data: freezeRow, error: freezeError } = await supabase
+    .from("group_members")
+    .select("freezes_left, freezes_month")
+    .eq("user_id", user.id)
+    .eq("group_id", groupId)
+    .maybeSingle();
+  const freezesWritable = !freezeError && !!freezeRow;
+  const currentFreezes =
+    freezesWritable && freezeRow?.freezes_month === month
+      ? typeof freezeRow.freezes_left === "number"
+        ? freezeRow.freezes_left
+        : FREEZES_PER_MONTH
+      : FREEZES_PER_MONTH;
+
+  const lastDay = membership.last_check_in as string | null;
   let newStreak: number;
-  if (membership.last_check_in === yesterday) {
+  let freezeConsumed = 0;
+
+  if (lastDay === yesterday) {
     newStreak = membership.streak_count + 1;
-  } else {
-    // Rupture de série : on repart à 1
+  } else if (!lastDay) {
     newStreak = 1;
+  } else {
+    // Un ou plusieurs jours manqués : la série est en danger
+    const missed = daysBetween(lastDay, today);
+    if (currentFreezes > 0 && missed > 0 && missed <= currentFreezes) {
+      freezeConsumed = missed;
+      newStreak = membership.streak_count + 1;
+    } else {
+      newStreak = 1;
+    }
   }
 
   await supabase
@@ -208,31 +236,58 @@ export async function checkIn(formData: FormData) {
     .update({ streak_count: newStreak, last_check_in: today })
     .eq("id", membership.id);
 
-  // Badge 7 jours : dès qu'un streak atteint 7 jours consécutifs
-  let badgeUnlocked = false;
-  if (newStreak >= 7) {
+  if (freezeConsumed > 0 && freezesWritable) {
+    await supabase
+      .from("group_members")
+      .update({
+        freezes_left: currentFreezes - freezeConsumed,
+        freezes_month: month,
+      })
+      .eq("id", membership.id);
+  }
+
+  // Historique quotidien (tolérant : ignorer si la table n'existe pas encore)
+  const { error: histError } = await supabase
+    .from("checkins")
+    .insert({ user_id: user.id, group_id: groupId, date: today })
+    .select("id")
+    .single();
+  void histError;
+
+  // Badges de paliers : 7, 14, 30, 60, 100 jours
+  let badgeKey: string | null = null;
+  for (const key of BADGE_TIERS) {
+    if (newStreak < key) break;
     const { data: existingBadge } = await supabase
       .from("user_badges")
       .select("id")
       .eq("user_id", user.id)
-      .eq("badge_key", "7_days")
+      .eq("group_id", groupId)
+      .eq("badge_key", `${key}_days`)
       .maybeSingle();
 
     if (!existingBadge) {
       const { error } = await supabase.from("user_badges").insert({
         user_id: user.id,
         group_id: groupId,
-        badge_key: "7_days",
+        badge_key: `${key}_days`,
       });
-      badgeUnlocked = !error;
+      if (!error) badgeKey = String(key);
     }
   }
 
   revalidatePath(`/groups/${groupId}`);
   revalidatePath("/dashboard");
 
-  const query = badgeUnlocked
-    ? `?badge=7&checked=1&group=${groupId}`
-    : `?checked=1&group=${groupId}`;
-  redirect(`/dashboard${query}`);
+  const params = new URLSearchParams();
+  if (badgeKey) params.set("badge", badgeKey);
+  params.set("checked", "1");
+  params.set("group", groupId);
+  redirect(`/dashboard?${params.toString()}`);
+}
+
+function daysBetween(fromDate: string, toDate: string): number {
+  const from = new Date(`${fromDate}T00:00:00Z`);
+  const to = new Date(`${toDate}T00:00:00Z`);
+  return Math.max(0, Math.round((to.getTime() - from.getTime()) / 86_400_000));
 }

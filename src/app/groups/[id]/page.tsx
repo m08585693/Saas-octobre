@@ -4,6 +4,19 @@ import { ChevronLeft } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import BrandLogo from "@/components/brand";
 import GroupDetailView from "@/components/group-detail-view";
+import {
+  FREEZES_PER_MONTH,
+  buildMonthCells,
+  initialsOf,
+  nextBadge,
+} from "@/lib/arc";
+
+type MemberRow = {
+  user_id: string;
+  display_name: string | null;
+  streak_count: number;
+  last_check_in: string | null;
+};
 
 export default async function GroupDetailPage({
   params,
@@ -28,22 +41,116 @@ export default async function GroupDetailPage({
 
   if (!detail) redirect("/dashboard");
 
-  const members = (detail.group_members ?? [])
+  const rawMembers = (detail.group_members ?? []) as MemberRow[];
+
+  const today = new Date().toISOString().slice(0, 10);
+  const month = today.slice(0, 7);
+
+  // Check-ins du jour (réactions)
+  const todayCheckins = new Map<string, string>();
+  {
+    const { data, error } = await supabase
+      .from("checkins")
+      .select("id, user_id")
+      .eq("group_id", id)
+      .eq("date", today);
+    if (!error) {
+      for (const c of (data ?? []) as { id: string; user_id: string }[]) {
+        todayCheckins.set(c.user_id, c.id);
+      }
+    }
+  }
+
+  // Réactions des check-ins du jour
+  const reactionsByUser = new Map<string, { emoji: string; count: number; mine: boolean }[]>();
+  {
+    const ids = Array.from(todayCheckins.values());
+    if (ids.length > 0) {
+      const { data, error } = await supabase
+        .from("checkin_reactions")
+        .select("checkin_id, emoji, user_id")
+        .in("checkin_id", ids);
+      if (!error) {
+        for (const c of Array.from(todayCheckins.entries())) {
+          const [uid, checkinId] = c;
+          const rows = (data ?? []).filter((r) => r.checkin_id === checkinId);
+          const summary = new Map<string, { count: number; mine: boolean }>();
+          for (const r of rows) {
+            const cur = summary.get(r.emoji) ?? { count: 0, mine: false };
+            cur.count += 1;
+            if (r.user_id === user.id) cur.mine = true;
+            summary.set(r.emoji, cur);
+          }
+          reactionsByUser.set(
+            uid,
+            Array.from(summary.entries()).map(([emoji, v]) => ({
+              emoji,
+              count: v.count,
+              mine: v.mine,
+            }))
+          );
+        }
+      }
+    }
+  }
+
+  // Historique du mois (heatmap) pour l'utilisateur
+  const monthStart = `${month}-01`;
+  const userMonthDates: string[] = [];
+  {
+    const { data, error } = await supabase
+      .from("checkins")
+      .select("date")
+      .eq("user_id", user.id)
+      .eq("group_id", id)
+      .gte("date", monthStart);
+    if (!error) {
+      for (const c of (data ?? []) as { date: string }[]) {
+        userMonthDates.push(c.date);
+      }
+    }
+  }
+
+  // Jokers de freeze du membre courant
+  let freezesLeft: number = FREEZES_PER_MONTH;
+  {
+    const { data: myMembership } = await supabase
+      .from("group_members")
+      .select("freezes_left, freezes_month")
+      .eq("user_id", user.id)
+      .eq("group_id", id)
+      .maybeSingle();
+    if (myMembership) {
+      freezesLeft =
+        myMembership.freezes_month === month
+          ? typeof myMembership.freezes_left === "number"
+            ? myMembership.freezes_left
+            : FREEZES_PER_MONTH
+          : FREEZES_PER_MONTH;
+    }
+  }
+
+  const members = rawMembers
     .map((m) => ({
-      userId: m.user_id as string,
+      userId: m.user_id,
       name: m.display_name ?? "Membre",
-      streak: m.streak_count as number,
-      lastCheckIn: m.last_check_in as string | null,
+      streak: m.streak_count,
+      checkedToday: m.last_check_in === today,
+      initials: initialsOf(m.display_name ?? "Membre"),
+      todayCheckInId: todayCheckins.get(m.user_id),
+      reactions: todayCheckins.has(m.user_id)
+        ? reactionsByUser.get(m.user_id)
+        : undefined,
     }))
     .sort((a, b) => b.streak - a.streak);
 
-  const myMembership = members.find((m) => m.userId === user.id);
-  const myStreak = myMembership?.streak ?? 0;
+  const myMembership = rawMembers.find((m) => m.user_id === user.id);
+  const myStreak = myMembership?.streak_count ?? 0;
   const myRank = myMembership
     ? members.findIndex((m) => m.userId === user.id) + 1
     : null;
   const checkedToday =
-    new Date().toISOString().slice(0, 10) === myMembership?.lastCheckIn;
+    today === (myMembership?.last_check_in ?? undefined);
 
   return (
     <div className="relative flex min-h-full flex-col overflow-hidden bg-[#0A0A10]">
@@ -71,15 +178,14 @@ export default async function GroupDetailPage({
             category={(detail.category as string) ?? "autre"}
             frequency={(detail.frequency as string) ?? "daily"}
             durationDays={(detail.duration_days as number | null) ?? null}
-            members={members.map((m) => ({
-              userId: m.userId,
-              name: m.name,
-              streak: m.streak,
-            }))}
+            members={members}
             currentUserId={user.id}
             myStreak={myStreak}
             myRank={myRank}
             checkedToday={checkedToday}
+            freezesLeft={freezesLeft}
+            monthCells={buildMonthCells(userMonthDates, new Date())}
+            nextBadge={nextBadge(myStreak)}
           />
         </main>
       </div>

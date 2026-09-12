@@ -33,6 +33,9 @@ export type DashboardGroup = {
   myStreak: number;
   myRank: number | null;
   checkedToday: boolean;
+  freezesLeft: number;
+  monthCells: ({ day: number; done: boolean } | null)[];
+  nextBadge: { threshold: number; daysLeft: number } | null;
 };
 
 type DashboardShellProps = {
@@ -43,7 +46,7 @@ type DashboardShellProps = {
   groups: DashboardGroup[];
   initialGroupId?: string;
   plan: string;
-  badgeUnlocked?: boolean;
+  badgeUnlocked?: string;
   justChecked?: boolean;
   paywallRequested?: boolean;
 };
@@ -66,7 +69,7 @@ export default function DashboardShell({
   groups,
   initialGroupId,
   plan,
-  badgeUnlocked = false,
+  badgeUnlocked,
   justChecked = false,
   paywallRequested = false,
 }: DashboardShellProps) {
@@ -93,7 +96,7 @@ export default function DashboardShell({
   const groupLimitReached = isFree && groups.length >= 1;
 
   // Modals badges / paywall
-  const [showBadge, setShowBadge] = useState(badgeUnlocked);
+  const [showBadge, setShowBadge] = useState(!!badgeUnlocked);
   const [showPaywall, setShowPaywall] = useState(paywallRequested);
   const [showConfetti, setShowConfetti] = useState(justChecked);
 
@@ -296,6 +299,7 @@ export default function DashboardShell({
         <main className="relative flex flex-1 flex-col items-center px-4 py-10 sm:px-6 lg:px-10">
           {selectedGroup ? (
             <GroupDetailView
+              key={selectedGroup.id}
               groupId={selectedGroup.id}
               name={selectedGroup.name}
               description={selectedGroup.description}
@@ -307,6 +311,9 @@ export default function DashboardShell({
               myStreak={selectedGroup.myStreak}
               myRank={selectedGroup.myRank}
               checkedToday={selectedGroup.checkedToday}
+              freezesLeft={selectedGroup.freezesLeft}
+              monthCells={selectedGroup.monthCells}
+              nextBadge={selectedGroup.nextBadge}
             />
           ) : (
             <motion.div
@@ -393,7 +400,9 @@ export default function DashboardShell({
       </div>
 
       {/* Modals */}
-      {showBadge && <BadgeModal onClose={handleBadgeClose} />}
+      {showBadge && badgeUnlocked && (
+        <BadgeModal days={Number(badgeUnlocked)} onClose={handleBadgeClose} />
+      )}
       {showPaywall && !showBadge && <PaywallModal onClose={closePaywall} />}
 
       {/* Confetti check-in réussi */}
