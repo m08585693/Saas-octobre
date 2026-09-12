@@ -6,7 +6,6 @@ import {
   CalendarCheck,
   CheckCircle2,
   Flame,
-  Sunrise,
   Zap,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
@@ -84,10 +83,7 @@ export default async function HomePage() {
           className="mx-auto w-full max-w-5xl px-6 pb-20"
         >
           <div className="flex flex-col items-center text-center">
-            <p className="text-xs font-medium uppercase tracking-[0.2em] text-violet-400">
-              Une fois le quiz rempli
-            </p>
-            <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
+            <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
               Ton groupe. Ton classement. Ta série.
             </h2>
             <p className="mt-3 max-w-lg text-[#A1A1AA]">
@@ -100,16 +96,6 @@ export default async function HomePage() {
           <div className="relative mx-auto mt-12 max-w-4xl">
             <div className="absolute -inset-6 -z-10 rounded-full bg-[radial-gradient(circle,rgba(124,58,237,0.18),transparent_65%)]" />
             <div className="overflow-hidden rounded-[16px] border border-[#232334] bg-[#0F0F16] shadow-[0_24px_80px_rgba(0,0,0,0.6)] [transform:perspective(1200px)_rotateX(6deg)]">
-              {/* Barre de navigateur */}
-              <div className="flex items-center gap-2 border-b border-[#232334] bg-[#12121B] px-4 py-3">
-                <span className="size-2.5 rounded-full bg-[#3E3E4E]" />
-                <span className="size-2.5 rounded-full bg-[#3E3E4E]" />
-                <span className="size-2.5 rounded-full bg-[#3E3E4E]" />
-                <div className="ml-3 flex-1 rounded-full bg-[#1A1A26] px-4 py-1.5 text-xs text-[#A1A1AA]">
-                  arc.app/dashboard
-                </div>
-              </div>
-
               <div className="flex">
                 {/* Sidebar */}
                 <div className="hidden w-44 shrink-0 flex-col gap-1 border-r border-[#232334] p-4 sm:flex">
@@ -188,32 +174,7 @@ export default async function HomePage() {
           id="fonctionnalites"
           className="mx-auto w-full max-w-5xl px-6 pb-24 pt-4"
         >
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {/* Boost & rituels — grande carte */}
-            <div className="rounded-[16px] border border-[#232334] bg-[#0F0F16]/70 p-6 backdrop-blur transition-colors hover:border-[#3E3E4E] md:col-span-2">
-              <div className="flex size-10 items-center justify-center rounded-full bg-violet-500/15">
-                <Sunrise className="size-5 text-violet-400" />
-              </div>
-              <h3 className="mt-4 font-display text-lg font-bold text-white">
-                Boost & rituels de motivation quotidiens
-              </h3>
-              <p className="mt-2 text-sm text-[#A1A1AA]">
-                Un rituel chaque matin, une dose de motivation, et ton groupe
-                qui veille sur ta série. Personne ne veut l&apos;abandonner —
-                c&apos;est fait exprès.
-              </p>
-              <div className="mt-5 flex flex-wrap gap-2">
-                {["Rituel matin", "Citation du jour", "Défis hebdo"].map((t) => (
-                  <span
-                    key={t}
-                    className="rounded-full border border-[#232334] bg-[#12121B] px-3 py-1 text-xs text-[#A1A1AA]"
-                  >
-                    {t}
-                  </span>
-                ))}
-              </div>
-            </div>
-
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {/* Tracker discipline */}
             <div className="rounded-[16px] border border-[#232334] bg-[#0F0F16]/70 p-6 backdrop-blur transition-colors hover:border-[#3E3E4E]">
               <div className="flex size-10 items-center justify-center rounded-full bg-emerald-500/15">
