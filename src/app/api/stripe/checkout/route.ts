@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createClient } from "@/lib/supabase/server";
 
-const PLANS: Record<string, { priceEnv: string; monthly: number }> = {
-  monthly: { priceEnv: process.env.STRIPE_PRICE_MONTHLY ?? "", monthly: 499 },
-  yearly: { priceEnv: process.env.STRIPE_PRICE_YEARLY ?? "", monthly: 0 },
+const PLANS: Record<string, string> = {
+  monthly: process.env.STRIPE_PRICE_MONTHLY ?? "",
+  quarterly: process.env.STRIPE_PRICE_QUARTERLY ?? "",
 };
 
 function getOrigin(req: Request): string {
@@ -35,8 +35,9 @@ export async function POST(req: Request) {
   }
 
   const body = (await req.json().catch(() => ({}))) as { plan?: string };
-  const plan = body.plan === "yearly" ? "yearly" : "monthly";
-  const priceId = PLANS[plan].priceEnv;
+  const validPlans: Record<string, boolean> = { monthly: true, quarterly: true };
+  const plan = validPlans[body.plan ?? ""] ? (body.plan as string) : "monthly";
+  const priceId = PLANS[plan];
   if (!priceId) {
     return NextResponse.json(
       { error: "Prix Stripe non configuré" },

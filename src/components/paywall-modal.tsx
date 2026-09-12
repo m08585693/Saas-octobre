@@ -16,7 +16,7 @@ const FEATURES = [
 ];
 
 export default function PaywallModal({ onClose }: PaywallModalProps) {
-  const [plan, setPlan] = useState<"monthly" | "yearly">("yearly");
+  const [plan, setPlan] = useState<"monthly" | "quarterly">("quarterly");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -100,22 +100,19 @@ export default function PaywallModal({ onClose }: PaywallModalProps) {
             </button>
             <button
               type="button"
-              onClick={() => setPlan("yearly")}
+              onClick={() => setPlan("quarterly")}
               className={`relative rounded-[14px] border p-4 text-left transition-all ${
-                plan === "yearly"
+                plan === "quarterly"
                   ? "border-blue-400/70 bg-[#191926] shadow-[0_0_20px_rgba(59,130,246,0.15)]"
                   : "border-[#232334] bg-[#12121B] hover:border-[#3E3E4E]"
               }`}
             >
-              <span className="absolute -top-2.5 right-3 rounded-full bg-gradient-to-r from-violet-500 to-blue-500 px-2 py-0.5 text-[10px] font-bold text-white">
-                −35%
-              </span>
               <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#A1A1AA]">
-                Annuel
+                Trimestriel
               </p>
               <p className="mt-2 font-display text-2xl font-bold text-white">
-                39 €
-                <span className="text-sm font-medium text-[#A1A1AA]">/an</span>
+                15 €
+                <span className="text-sm font-medium text-[#A1A1AA]">/3 mois</span>
               </p>
             </button>
           </div>
