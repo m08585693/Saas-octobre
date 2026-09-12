@@ -5,11 +5,9 @@ import { useState } from "react";
 import { motion, type Variants } from "framer-motion";
 import {
   ArrowRight,
-  CalendarDays,
   ChevronDown,
   Flag,
   Sparkles,
-  Zap,
 } from "lucide-react";
 import { createGroup } from "@/app/group-actions";
 

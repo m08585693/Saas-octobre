@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { motion, type Variants } from "framer-motion";
 import {
   ArrowRight,
-  Flame,
   LogOut,
   Plus,
   Target,
@@ -67,22 +66,21 @@ export default function DashboardShell({
   paywallRequested = false,
 }: DashboardShellProps) {
   const router = useRouter();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  useEffect(() => {
-    setIsSidebarOpen(window.matchMedia("(min-width: 1024px)").matches);
-  }, []);
-
-  const [selectedGroupId, setSelectedGroupId] = useState<string | null>(
-    initialGroupId ?? groups[0]?.id ?? null
+  const [isSidebarOpen, setIsSidebarOpen] = useState(
+    () =>
+      typeof window === "undefined"
+        ? false
+        : window.matchMedia("(min-width: 1024px)").matches
   );
 
-  useEffect(() => {
-    setSelectedGroupId(initialGroupId ?? groups[0]?.id ?? null);
-  }, [initialGroupId, groups]);
+  const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
 
   const selectedGroup =
-    groups.find((g) => g.id === selectedGroupId) ?? groups[0] ?? null;
+    groups.find(
+      (g) => g.id === selectedGroupId || g.id === initialGroupId
+    ) ??
+    groups[0] ??
+    null;
 
   // Plan gratuit : une seule groupe autorisé
   const isFree = plan !== "pro";
@@ -109,14 +107,6 @@ export default function DashboardShell({
   const handleBadgeClose = () => {
     setShowBadge(false);
     if (isFree) setShowPaywall(true);
-  };
-
-  const createOrJoin = (href: string) => {
-    if (groupLimitReached) {
-      openPaywall();
-      return;
-    }
-    router.push(href);
   };
 
   return (

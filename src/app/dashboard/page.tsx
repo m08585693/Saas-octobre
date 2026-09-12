@@ -4,8 +4,6 @@ import DashboardShell, {
   type DashboardGroup,
 } from "@/components/dashboard-shell";
 
-type Params = Promise<{ id?: string }>;
-
 export default async function DashboardPage({
   searchParams,
 }: {

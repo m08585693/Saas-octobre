@@ -3,9 +3,9 @@ import {
   type SupabaseClient,
 } from "@supabase/supabase-js";
 
-let cached: SupabaseClient<any> | null = null;
+let cached: SupabaseClient | null = null;
 
-export function createAdmin(): SupabaseClient<any> {
+export function createAdmin(): SupabaseClient {
   if (!cached) {
     cached = createSupabaseClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,

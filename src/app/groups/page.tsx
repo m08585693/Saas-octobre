@@ -25,7 +25,7 @@ export default async function GroupsPage() {
     (memberships ?? []).map((m) => m.group_id as string)
   );
 
-  const rows = (groups ?? []).map((g: any) => {
+  const rows = (groups ?? []).map((g) => {
     const members: { streak_count: number }[] = g.group_members ?? [];
     const memberCount = members.length;
     const avgStreak =

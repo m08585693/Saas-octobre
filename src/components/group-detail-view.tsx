@@ -58,12 +58,12 @@ export default function GroupDetailView({
   const frequencyLabel =
     frequency === "daily" ? "Tous les jours" : `Jours : ${frequency}`;
 
-  const [inviteUrl, setInviteUrl] = useState("");
+  const [inviteUrl] = useState(() =>
+    typeof window === "undefined"
+      ? ""
+      : `${window.location.origin}/invite/${currentUserId}`
+  );
   const [copied, setCopied] = useState(false);
-
-  useEffect(() => {
-    setInviteUrl(`${window.location.origin}/invite/${currentUserId}`);
-  }, [currentUserId]);
 
   useEffect(() => {
     if (!copied) return;
