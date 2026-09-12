@@ -10,6 +10,7 @@ import {
   Zap,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import BrandLogo from "@/components/brand";
 import Quiz from "@/components/quiz";
 
 export default async function HomePage() {
@@ -36,9 +37,7 @@ export default async function HomePage() {
       <div className="relative">
         {/* Header */}
         <header className="mx-auto flex w-full max-w-5xl items-center justify-between px-6 py-5">
-          <Link href="/" className="font-display text-lg font-bold text-white">
-            WinterArc SaaS
-          </Link>
+          <BrandLogo size="lg" suffix="SaaS" />
           <nav className="hidden items-center gap-7 text-sm text-[#A1A1AA] sm:flex">
             <a href="#apercu" className="transition-colors hover:text-white">
               Aperçu

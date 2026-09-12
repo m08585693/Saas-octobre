@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Zap } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import BrandLogo from "@/components/brand";
 import GroupsExplorer from "@/components/groups-explorer";
 
 export default async function GroupsPage() {
@@ -53,14 +53,7 @@ export default async function GroupsPage() {
 
       <div className="relative">
         <header className="mx-auto flex w-full max-w-4xl items-center justify-between px-6 py-5">
-          <Link href="/" className="flex items-center gap-2.5">
-            <span className="flex size-8 items-center justify-center rounded-[10px] bg-gradient-to-br from-violet-500 to-blue-500 shadow-[0_0_16px_rgba(139,92,246,0.4)]">
-              <Zap className="size-4 text-white" fill="currentColor" />
-            </span>
-            <span className="font-display text-base font-bold text-white">
-              WinterArc
-            </span>
-          </Link>
+          <BrandLogo />
           <Link
             href="/dashboard"
             className="text-sm text-[#A1A1AA] transition-colors hover:text-white"

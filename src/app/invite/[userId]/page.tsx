@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Zap, Gift } from "lucide-react";
+import BrandLogo from "@/components/brand";
 
 export default async function InvitePage({
   params,
@@ -18,14 +19,7 @@ export default async function InvitePage({
 
       <div className="relative">
         <header className="mx-auto flex w-full max-w-5xl items-center justify-between px-6 py-5">
-          <Link href="/" className="flex items-center gap-2.5">
-            <span className="flex size-8 items-center justify-center rounded-[10px] bg-gradient-to-br from-violet-500 to-blue-500 shadow-[0_0_16px_rgba(139,92,246,0.4)]">
-              <Zap className="size-4 text-white" fill="currentColor" />
-            </span>
-            <span className="font-display text-base font-bold text-white">
-              WinterArc
-            </span>
-          </Link>
+          <BrandLogo />
         </header>
 
         <main className="flex flex-1 items-center justify-center px-6 pb-20 pt-10">

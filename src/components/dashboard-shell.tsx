@@ -13,6 +13,7 @@ import {
   Zap,
 } from "lucide-react";
 import { logout } from "@/app/actions";
+import BrandLogo from "@/components/brand";
 import GroupDetailView, {
   type GroupMemberView,
 } from "@/components/group-detail-view";
@@ -129,17 +130,7 @@ export default function DashboardShell({
         }`}
       >
         <div className="flex h-full flex-col p-4">
-          <Link
-            href="/"
-            className="flex items-center gap-2.5 px-2 py-1"
-          >
-            <span className="flex size-8 items-center justify-center rounded-[10px] bg-gradient-to-br from-violet-500 to-blue-500 shadow-[0_0_16px_rgba(139,92,246,0.4)]">
-              <Zap className="size-4 text-white" fill="currentColor" />
-            </span>
-            <span className="font-display text-base font-bold text-white">
-              WinterArc
-            </span>
-          </Link>
+          <BrandLogo className="px-2 py-1" />
 
           <div className="mt-4 flex items-center justify-between px-2">
             <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-[#A1A1AA]">
@@ -265,12 +256,7 @@ export default function DashboardShell({
                 </span>
               )}
             </button>
-            <Link
-              href="/"
-              className="hidden items-center gap-2 font-display text-base font-bold text-white sm:flex"
-            >
-              WinterArc
-            </Link>
+            <BrandLogo withIcon={false} className="hidden sm:inline-flex" />
           </div>
 
           <div className="flex items-center gap-2.5">

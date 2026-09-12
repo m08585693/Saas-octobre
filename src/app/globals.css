@@ -7,6 +7,7 @@
   --color-accent: #3b82f6;
   --font-sans: var(--font-geist-sans);
   --font-display: var(--font-space-grotesk);
+  --font-brand: var(--font-syne);
   --font-mono: var(--font-geist-mono);
 }
 
