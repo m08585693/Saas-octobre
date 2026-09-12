@@ -37,7 +37,7 @@ export default async function HomePage() {
       <div className="relative">
         {/* Header */}
         <header className="mx-auto flex w-full max-w-5xl items-center justify-between px-6 py-5">
-          <BrandLogo size="lg" suffix="SaaS" />
+          <BrandLogo size="lg" />
           <nav className="hidden items-center gap-7 text-sm text-[#A1A1AA] sm:flex">
             <ScrollLink targetId="apercu">Aperçu</ScrollLink>
             <ScrollLink targetId="fonctionnalites">

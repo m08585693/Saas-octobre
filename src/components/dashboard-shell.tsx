@@ -259,8 +259,8 @@ export default function DashboardShell({
             <BrandLogo withIcon={false} className="hidden sm:inline-flex" />
           </div>
 
-          <div className="flex items-center gap-2.5">
-            <span className="rounded-full border border-[#232334] bg-[#0F0F16]/70 px-3 py-1.5 text-xs text-[#A1A1AA]">
+          <div className="flex items-center gap-2 sm:gap-2.5">
+            <span className="hidden rounded-full border border-[#232334] bg-[#0F0F16]/70 px-3 py-1.5 text-xs text-[#A1A1AA] sm:inline-block">
               @{handle}
             </span>
             <span className="flex size-8 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-blue-500 text-xs font-bold text-white">

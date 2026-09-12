@@ -5,7 +5,6 @@ type BrandLogoProps = {
   href?: string;
   withIcon?: boolean;
   size?: "sm" | "lg";
-  suffix?: string;
   className?: string;
 };
 
@@ -18,7 +17,6 @@ export default function BrandLogo({
   href = "/",
   withIcon = true,
   size = "sm",
-  suffix,
   className,
 }: BrandLogoProps) {
   return (
@@ -37,12 +35,6 @@ export default function BrandLogo({
       >
         Winter Arc
       </span>
-      <span className="size-1.5 rounded-full bg-blue-400 shadow-[0_0_10px_rgba(59,130,246,0.9)] transition-shadow duration-300 group-hover:shadow-[0_0_16px_rgba(59,130,246,1.2)]" />
-      {suffix && (
-        <span className="text-xs font-semibold uppercase tracking-[0.22em] text-[#6B7280]">
-          {suffix}
-        </span>
-      )}
     </Link>
   );
 }
