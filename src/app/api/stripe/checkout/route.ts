@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 
 const PLANS: Record<string, string> = {
   monthly: process.env.STRIPE_PRICE_MONTHLY ?? "",
-  quarterly: process.env.STRIPE_PRICE_QUARTERLY ?? "",
+  yearly: process.env.STRIPE_PRICE_YEARLY ?? "",
 };
 
 function getOrigin(req: Request): string {
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
   }
 
   const body = (await req.json().catch(() => ({}))) as { plan?: string };
-  const validPlans: Record<string, boolean> = { monthly: true, quarterly: true };
+  const validPlans: Record<string, boolean> = { monthly: true, yearly: true };
   const plan = validPlans[body.plan ?? ""] ? (body.plan as string) : "monthly";
   const priceId = PLANS[plan];
   if (!priceId) {

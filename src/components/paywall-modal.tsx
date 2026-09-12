@@ -16,7 +16,7 @@ const FEATURES = [
 ];
 
 export default function PaywallModal({ onClose }: PaywallModalProps) {
-  const [plan, setPlan] = useState<"monthly" | "quarterly">("quarterly");
+  const [plan, setPlan] = useState<"monthly" | "yearly">("yearly");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -74,9 +74,12 @@ export default function PaywallModal({ onClose }: PaywallModalProps) {
           <h2 className="mt-4 text-center font-display text-2xl font-bold tracking-tight text-white">
             Passe au plan Pro
           </h2>
-          <p className="mt-2 text-center text-sm leading-relaxed text-[#A1A1AA]">
-            Débloque des groupes illimités et transforme complètement ton Winter
-            Arc.
+          <p className="mt-3 text-center text-[15px] leading-relaxed text-[#A1A1AA]">
+            <span className="font-display text-2xl font-extrabold tracking-tight text-violet-400">
+              4,99&nbsp;€.
+            </span>{" "}
+            Moins cher qu&apos;un menu fast food, pour un mois entier à tenir tes
+            objectifs.
           </p>
 
           {/* Offres */}
@@ -100,19 +103,22 @@ export default function PaywallModal({ onClose }: PaywallModalProps) {
             </button>
             <button
               type="button"
-              onClick={() => setPlan("quarterly")}
+              onClick={() => setPlan("yearly")}
               className={`relative rounded-[14px] border p-4 text-left transition-all ${
-                plan === "quarterly"
-                  ? "border-blue-400/70 bg-[#191926] shadow-[0_0_20px_rgba(59,130,246,0.15)]"
+                plan === "yearly"
+                  ? "border-violet-400/70 bg-[#191926] shadow-[0_0_20px_rgba(139,92,246,0.15)]"
                   : "border-[#232334] bg-[#12121B] hover:border-[#3E3E4E]"
               }`}
             >
               <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#A1A1AA]">
-                Trimestriel
+                Annuel
               </p>
               <p className="mt-2 font-display text-2xl font-bold text-white">
-                14 €
-                <span className="text-sm font-medium text-[#A1A1AA]">/3 mois</span>
+                39 €
+                <span className="text-sm font-medium text-[#A1A1AA]">/an</span>
+              </p>
+              <p className="mt-1.5 text-[11px] font-medium text-amber-400">
+                Économise 35%
               </p>
             </button>
           </div>
