@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion, type Variants } from "framer-motion";
 import {
   ArrowRight,
@@ -16,6 +17,8 @@ import { logout } from "@/app/actions";
 import GroupDetailView, {
   type GroupMemberView,
 } from "@/components/group-detail-view";
+import BadgeModal from "@/components/badge-modal";
+import PaywallModal from "@/components/paywall-modal";
 
 export type DashboardGroup = {
   id: string;
@@ -37,6 +40,9 @@ type DashboardShellProps = {
   initials: string;
   groups: DashboardGroup[];
   initialGroupId?: string;
+  plan: string;
+  badgeUnlocked?: boolean;
+  paywallRequested?: boolean;
 };
 
 const cardVariants: Variants = {
@@ -56,7 +62,11 @@ export default function DashboardShell({
   initials,
   groups,
   initialGroupId,
+  plan,
+  badgeUnlocked = false,
+  paywallRequested = false,
 }: DashboardShellProps) {
+  const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
@@ -73,6 +83,41 @@ export default function DashboardShell({
 
   const selectedGroup =
     groups.find((g) => g.id === selectedGroupId) ?? groups[0] ?? null;
+
+  // Plan gratuit : une seule groupe autorisé
+  const isFree = plan !== "pro";
+  const groupLimitReached = isFree && groups.length >= 1;
+
+  // Modals badges / paywall
+  const [showBadge, setShowBadge] = useState(badgeUnlocked);
+  const [showPaywall, setShowPaywall] = useState(paywallRequested);
+
+  // Nettoie les params d'URL une fois consommés
+  useEffect(() => {
+    if (badgeUnlocked || paywallRequested) {
+      const params = new URLSearchParams();
+      if (selectedGroup) params.set("group", selectedGroup.id);
+      router.replace(`/dashboard${params.size ? `?${params.toString()}` : ""}`, {
+        scroll: false,
+      });
+    }
+  }, [badgeUnlocked, paywallRequested, selectedGroup, router]);
+
+  const openPaywall = () => setShowPaywall(true);
+  const closePaywall = () => setShowPaywall(false);
+
+  const handleBadgeClose = () => {
+    setShowBadge(false);
+    if (isFree) setShowPaywall(true);
+  };
+
+  const createOrJoin = (href: string) => {
+    if (groupLimitReached) {
+      openPaywall();
+      return;
+    }
+    router.push(href);
+  };
 
   return (
     <div className="relative min-h-full bg-[#0A0A10]">
@@ -110,13 +155,24 @@ export default function DashboardShell({
             <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-[#A1A1AA]">
               Mes groupes
             </p>
-            <Link
-              href="/groups"
-              className="text-[#A1A1AA] transition-colors hover:text-white"
-              title="Rejoindre un groupe"
-            >
-              <Plus className="size-4" />
-            </Link>
+            {groupLimitReached ? (
+              <button
+                type="button"
+                onClick={openPaywall}
+                title="Passer au plan Pro pour rejoindre plus de groupes"
+                className="text-[#A1A1AA] transition-colors hover:text-white"
+              >
+                <Plus className="size-4" />
+              </button>
+            ) : (
+              <Link
+                href="/groups"
+                className="text-[#A1A1AA] transition-colors hover:text-white"
+                title="Rejoindre un groupe"
+              >
+                <Plus className="size-4" />
+              </Link>
+            )}
           </div>
 
           <nav className="mt-2 flex flex-col gap-1">
@@ -150,20 +206,42 @@ export default function DashboardShell({
           </nav>
 
           <div className="mt-6 flex flex-col gap-2 border-t border-[#232334] pt-4">
-            <Link
-              href="/create"
-              className="flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-violet-500 to-blue-500 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_0_16px_rgba(139,92,246,0.3)] transition-all hover:from-violet-400 hover:to-blue-400"
-            >
-              <Plus className="size-4" />
-              Créer un groupe
-            </Link>
-            <Link
-              href="/groups"
-              className="flex items-center justify-center gap-2 rounded-full border border-[#3E3E4E] bg-[#12121B] px-4 py-2.5 text-sm font-semibold text-white transition-all hover:border-blue-400/70 hover:bg-[#191926]"
-            >
-              <Users className="size-4" />
-              Rejoindre un groupe
-            </Link>
+            {groupLimitReached ? (
+              <button
+                type="button"
+                onClick={openPaywall}
+                className="flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-violet-500 to-blue-500 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_0_16px_rgba(139,92,246,0.3)] transition-all hover:from-violet-400 hover:to-blue-400"
+              >
+                <Plus className="size-4" />
+                Créer un groupe
+              </button>
+            ) : (
+              <Link
+                href="/create"
+                className="flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-violet-500 to-blue-500 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_0_16px_rgba(139,92,246,0.3)] transition-all hover:from-violet-400 hover:to-blue-400"
+              >
+                <Plus className="size-4" />
+                Créer un groupe
+              </Link>
+            )}
+            {groupLimitReached ? (
+              <button
+                type="button"
+                onClick={openPaywall}
+                className="flex items-center justify-center gap-2 rounded-full border border-[#3E3E4E] bg-[#12121B] px-4 py-2.5 text-sm font-semibold text-white transition-all hover:border-blue-400/70 hover:bg-[#191926]"
+              >
+                <Users className="size-4" />
+                Rejoindre un groupe
+              </button>
+            ) : (
+              <Link
+                href="/groups"
+                className="flex items-center justify-center gap-2 rounded-full border border-[#3E3E4E] bg-[#12121B] px-4 py-2.5 text-sm font-semibold text-white transition-all hover:border-blue-400/70 hover:bg-[#191926]"
+              >
+                <Users className="size-4" />
+                Rejoindre un groupe
+              </Link>
+            )}
           </div>
         </div>
       </aside>
@@ -323,6 +401,10 @@ export default function DashboardShell({
           )}
         </main>
       </div>
+
+      {/* Modals */}
+      {showBadge && <BadgeModal onClose={handleBadgeClose} />}
+      {showPaywall && !showBadge && <PaywallModal onClose={closePaywall} />}
     </div>
   );
 }

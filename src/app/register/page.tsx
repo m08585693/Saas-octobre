@@ -2,7 +2,13 @@ import Link from "next/link";
 import { Zap } from "lucide-react";
 import RegisterForm from "./register-form";
 
-export default function RegisterPage() {
+export default async function RegisterPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ ref?: string }>;
+}) {
+  const { ref } = await searchParams;
+  const validRef = ref && /^[0-9a-fA-F-]{36}$/.test(ref) ? ref : "";
   return (
     <div className="relative flex min-h-full flex-col overflow-hidden bg-[#0A0A10]">
       <div className="landing-halo left-[-140px] top-[-120px] size-[420px] bg-violet-600/25" />
@@ -28,7 +34,7 @@ export default function RegisterPage() {
         </header>
 
         <main className="flex flex-1 items-center justify-center px-6 pb-20 pt-8">
-          <RegisterForm />
+          <RegisterForm refCode={validRef} />
         </main>
       </div>
     </div>

@@ -22,7 +22,7 @@ const ASSURANCES = [
   "1 groupe gratuit à vie",
 ];
 
-export default function RegisterForm() {
+export default function RegisterForm({ refCode }: { refCode?: string }) {
   const [state, action, pending] = useActionState(register, {});
 
   return (
@@ -52,6 +52,7 @@ export default function RegisterForm() {
 
         {/* Formulaire */}
         <form action={action} className="mt-7 flex flex-col gap-5">
+          {refCode && <input type="hidden" name="ref" value={refCode} />}
           <div>
             <label htmlFor="name" className="mb-2 block text-sm text-[#A1A1AA]">
               Nom complet

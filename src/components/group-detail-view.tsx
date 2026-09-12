@@ -1,8 +1,11 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   CalendarDays,
   Flame,
+  Gift,
   Medal,
   Users,
 } from "lucide-react";
@@ -54,6 +57,28 @@ export default function GroupDetailView({
   const categoryLabel = CATEGORY_LABELS[category] ?? "Autre";
   const frequencyLabel =
     frequency === "daily" ? "Tous les jours" : `Jours : ${frequency}`;
+
+  const [inviteUrl, setInviteUrl] = useState("");
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    setInviteUrl(`${window.location.origin}/invite/${currentUserId}`);
+  }, [currentUserId]);
+
+  useEffect(() => {
+    if (!copied) return;
+    const t = setTimeout(() => setCopied(false), 2200);
+    return () => clearTimeout(t);
+  }, [copied]);
+
+  async function copyInvite() {
+    try {
+      await navigator.clipboard.writeText(inviteUrl);
+      setCopied(true);
+    } catch {
+      // Presse-papier indisponible : on ignore
+    }
+  }
 
   return (
     <div className="w-full max-w-2xl">
@@ -151,6 +176,43 @@ export default function GroupDetailView({
             : "Check-in — valider ta journée"}
         </button>
       </form>
+
+      {/* Invitation */}
+      <div className="mt-5 rounded-[16px] border border-[#232334] bg-[#0F0F16]/70 p-5 backdrop-blur">
+        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#A1A1AA]">
+          Inviter des amis
+        </p>
+        <p className="mt-1.5 text-sm text-[#A1A1AA]">
+          Copie ton lien unique et partage le Winter Arc avec ton entourage.
+        </p>
+        <button
+          type="button"
+          onClick={copyInvite}
+          disabled={!inviteUrl}
+          className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full border border-[#3E3E4E] bg-[#12121B] px-4 py-2.5 text-sm font-semibold text-white transition-all hover:border-violet-400/70 hover:bg-[#191926] disabled:opacity-50"
+        >
+          <Gift className="size-4 text-violet-400" />
+          {copied ? "Lien copié !" : "Copier mon lien d'invitation"}
+        </button>
+      </div>
+
+      {/* Toast copie */}
+      <AnimatePresence>
+        {copied && (
+          <motion.div
+            initial={{ opacity: 0, y: 16, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 8, scale: 0.95 }}
+            transition={{ duration: 0.25 }}
+            className="fixed bottom-6 left-1/2 z-[60] -translate-x-1/2"
+          >
+            <span className="flex items-center gap-2 whitespace-nowrap rounded-full border border-emerald-500/30 bg-[#12121B] px-4 py-2.5 text-sm font-semibold text-emerald-300 shadow-[0_0_24px_rgba(16,185,129,0.25)]">
+              <Gift className="size-4" />
+              Lien d&apos;invitation copié !
+            </span>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

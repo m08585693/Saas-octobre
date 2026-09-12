@@ -9,15 +9,22 @@ type Params = Promise<{ id?: string }>;
 export default async function DashboardPage({
   searchParams,
 }: {
-  searchParams: Promise<{ group?: string }>;
+  searchParams: Promise<{ group?: string; badge?: string; paywall?: string }>;
 }) {
-  const { group: initialGroupId } = await searchParams;
+  const { group: initialGroupId, badge, paywall } = await searchParams;
   const supabase = await createClient();
 
   const {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("plan")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  const plan = profile?.plan ?? "free";
 
   const { data: memberships } = await supabase
     .from("group_members")
@@ -124,6 +131,9 @@ export default async function DashboardPage({
       initials={initials}
       groups={groups}
       initialGroupId={initialGroupId}
+      plan={plan}
+      badgeUnlocked={badge === "7"}
+      paywallRequested={paywall === "1"}
     />
   );
 }
