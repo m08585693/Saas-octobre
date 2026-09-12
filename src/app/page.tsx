@@ -66,7 +66,7 @@ export default async function HomePage() {
           </div>
 
           <h1 className="mt-6 max-w-3xl text-center font-display text-4xl font-bold tracking-tight text-white text-balance sm:text-6xl">
-            Construis ton Winter Arc sur-mesure
+            Ton winter arc, pas tout seul.
           </h1>
           <p className="mx-auto mt-4 max-w-md text-center text-base text-[#A1A1AA] sm:text-lg">
             Réponds à 3 questions. On te construit ton plan de discipline, de
