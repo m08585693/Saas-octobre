@@ -233,9 +233,6 @@ export default async function HomePage() {
             <h2 className="font-display text-3xl font-bold tracking-tight text-white">
               Prêt à tenir jusqu&apos;au bout ?
             </h2>
-            <p className="mt-3 max-w-md text-[#A1A1AA]">
-              3 questions et tu rejoins le bon groupe. Sans carte bancaire.
-            </p>
             <Link
               href="/register"
               className="mt-7 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-violet-500 to-blue-500 px-8 py-3.5 text-base font-semibold text-white shadow-[0_0_24px_rgba(139,92,246,0.4)] transition-all hover:from-violet-400 hover:to-blue-400"
