@@ -14,12 +14,15 @@ export default function ScrollLink({
       href={`#${targetId}`}
       onClick={(e) => {
         e.preventDefault();
+        const el = document.getElementById(targetId);
+        if (!el) return;
         const reduced = window.matchMedia(
           "(prefers-reduced-motion: reduce)"
         ).matches;
-        document
-          .getElementById(targetId)
-          ?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+        window.scrollTo({
+          top: el.getBoundingClientRect().top + window.scrollY,
+          behavior: reduced ? "auto" : "smooth",
+        });
       }}
       className="transition-colors hover:text-white"
     >
