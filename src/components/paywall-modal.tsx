@@ -111,7 +111,7 @@ export default function PaywallModal({ onClose }: PaywallModalProps) {
                 Trimestriel
               </p>
               <p className="mt-2 font-display text-2xl font-bold text-white">
-                15 €
+                14 €
                 <span className="text-sm font-medium text-[#A1A1AA]">/3 mois</span>
               </p>
             </button>
