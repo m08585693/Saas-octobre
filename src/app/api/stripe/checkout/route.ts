@@ -57,6 +57,9 @@ export async function POST(req: Request) {
       success_url: `${origin}/dashboard?checkout=success`,
       cancel_url: `${origin}/dashboard?paywall=1`,
       metadata: { user_id: user.id },
+      // Managed Payments exige un tax_code sur le produit ; désactivé pour
+      // rester simple tant que les taxes ne sont pas configurées côté Stripe.
+      managed_payments: { enabled: false },
     });
 
     if (!session.url) {
