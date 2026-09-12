@@ -3,7 +3,7 @@
 import { useActionState } from "react";
 import Link from "next/link";
 import { motion, type Variants } from "framer-motion";
-import { ArrowRight, CheckCircle2, Lock, Mail, User, Zap } from "lucide-react";
+import { ArrowRight, Lock, Mail, User, Zap } from "lucide-react";
 import { register } from "@/app/actions";
 
 const container: Variants = {
@@ -15,12 +15,6 @@ const item: Variants = {
   hidden: { opacity: 0, y: 14 },
   show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } },
 };
-
-const ASSURANCES = [
-  "Accès complet au dashboard",
-  "14 jours d'essai gratuit",
-  "1 groupe gratuit à vie",
-];
 
 export default function RegisterForm({ refCode }: { refCode?: string }) {
   const [state, action, pending] = useActionState(register, {});
@@ -114,19 +108,7 @@ export default function RegisterForm({ refCode }: { refCode?: string }) {
             </div>
           </div>
 
-          {/* Bloc réassurance */}
-          <ul className="mt-1 flex flex-col gap-2">
-            {ASSURANCES.map((a) => (
-              <li
-                key={a}
-                className="flex items-center gap-2.5 text-sm text-[#A1A1AA]"
-              >
-                <CheckCircle2 className="size-4 shrink-0 text-emerald-400" />
-                {a}
-              </li>
-            ))}
-          </ul>
-
+          {/* Message d'erreur */}
           {state?.error && (
             <p className="rounded-[8px] border border-red-500/30 bg-red-500/10 px-3.5 py-2.5 text-sm text-red-300">
               {state.error}
