@@ -7,11 +7,10 @@ import {
   CheckCircle2,
   Flame,
   Sunrise,
-  Zap,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import BrandLogo from "@/components/brand";
-import Quiz from "@/components/quiz";
+import Hero from "@/components/hero";
 
 export default async function HomePage() {
   const supabase = await createClient();
@@ -59,24 +58,7 @@ export default async function HomePage() {
         </header>
 
         {/* Hero */}
-        <section className="mx-auto flex w-full max-w-5xl flex-col items-center px-6 pb-20 pt-10 sm:pt-14">
-          <div className="flex items-center gap-2 rounded-full border border-[#232334] bg-[#0F0F16]/70 px-4 py-1.5 text-xs font-semibold tracking-[0.14em] text-[#A1A1AA] shadow-[0_0_16px_rgba(139,92,246,0.15)] backdrop-blur">
-            <Zap className="size-3.5 text-violet-400" fill="currentColor" />
-            #1 OUTIL WINTER ARC
-          </div>
-
-          <h1 className="mt-6 max-w-3xl text-center font-display text-4xl font-bold tracking-tight text-white text-balance sm:text-6xl">
-            Construis ton Winter Arc sur-mesure
-          </h1>
-          <p className="mx-auto mt-4 max-w-md text-center text-base text-[#A1A1AA] sm:text-lg">
-            Réponds à 3 questions. On te construit ton plan de discipline, de
-            rituels et de motivation sur-mesure.
-          </p>
-
-          <div className="mt-10 w-full">
-            <Quiz />
-          </div>
-        </section>
+        <Hero />
 
         {/* Aperçu / Mockup */}
         <section
