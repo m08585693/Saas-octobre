@@ -19,6 +19,7 @@ import GroupDetailView, {
 } from "@/components/group-detail-view";
 import BadgeModal from "@/components/badge-modal";
 import PaywallModal from "@/components/paywall-modal";
+import Confetti from "@/components/confetti";
 
 export type DashboardGroup = {
   id: string;
@@ -42,6 +43,7 @@ type DashboardShellProps = {
   initialGroupId?: string;
   plan: string;
   badgeUnlocked?: boolean;
+  justChecked?: boolean;
   paywallRequested?: boolean;
 };
 
@@ -64,6 +66,7 @@ export default function DashboardShell({
   initialGroupId,
   plan,
   badgeUnlocked = false,
+  justChecked = false,
   paywallRequested = false,
 }: DashboardShellProps) {
   const router = useRouter();
@@ -90,17 +93,18 @@ export default function DashboardShell({
   // Modals badges / paywall
   const [showBadge, setShowBadge] = useState(badgeUnlocked);
   const [showPaywall, setShowPaywall] = useState(paywallRequested);
+  const [showConfetti, setShowConfetti] = useState(justChecked);
 
   // Nettoie les params d'URL une fois consommés
   useEffect(() => {
-    if (badgeUnlocked || paywallRequested) {
+    if (badgeUnlocked || paywallRequested || justChecked) {
       const params = new URLSearchParams();
       if (selectedGroup) params.set("group", selectedGroup.id);
       router.replace(`/dashboard${params.size ? `?${params.toString()}` : ""}`, {
         scroll: false,
       });
     }
-  }, [badgeUnlocked, paywallRequested, selectedGroup, router]);
+  }, [badgeUnlocked, paywallRequested, justChecked, selectedGroup, router]);
 
   const openPaywall = () => setShowPaywall(true);
   const closePaywall = () => setShowPaywall(false);
@@ -381,6 +385,9 @@ export default function DashboardShell({
       {/* Modals */}
       {showBadge && <BadgeModal onClose={handleBadgeClose} />}
       {showPaywall && !showBadge && <PaywallModal onClose={closePaywall} />}
+
+      {/* Confetti check-in réussi */}
+      {showConfetti && <Confetti onDone={() => setShowConfetti(false)} />}
     </div>
   );
 }

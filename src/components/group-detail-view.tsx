@@ -7,6 +7,7 @@ import {
   Flame,
   Gift,
   Medal,
+  Share2,
   Users,
 } from "lucide-react";
 import { checkIn } from "@/app/group-actions";
@@ -64,12 +65,16 @@ export default function GroupDetailView({
       : `${window.location.origin}/invite/${currentUserId}`
   );
   const [copied, setCopied] = useState(false);
+  const [shared, setShared] = useState(false);
 
   useEffect(() => {
-    if (!copied) return;
-    const t = setTimeout(() => setCopied(false), 2200);
+    if (!copied && !shared) return;
+    const t = setTimeout(() => {
+      setCopied(false);
+      setShared(false);
+    }, 2200);
     return () => clearTimeout(t);
-  }, [copied]);
+  }, [copied, shared]);
 
   async function copyInvite() {
     try {
@@ -77,6 +82,23 @@ export default function GroupDetailView({
       setCopied(true);
     } catch {
       // Presse-papier indisponible : on ignore
+    }
+  }
+
+  async function shareInvite() {
+    if (typeof navigator.share === "function") {
+      try {
+        await navigator.share({
+          title: name,
+          text: `Rejoins mon Winter Arc « ${name} » : restons disciplinés ensemble.`,
+          url: inviteUrl,
+        });
+        setShared(true);
+      } catch {
+        // Partager annulé par l'utilisateur : on ignore
+      }
+    } else {
+      await copyInvite();
     }
   }
 
@@ -185,18 +207,29 @@ export default function GroupDetailView({
         <p className="mt-1.5 text-sm text-[#A1A1AA]">
           Copie ton lien unique et partage le Winter Arc avec ton entourage.
         </p>
-        <button
-          type="button"
-          onClick={copyInvite}
-          disabled={!inviteUrl}
-          className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full border border-[#3E3E4E] bg-[#12121B] px-4 py-2.5 text-sm font-semibold text-white transition-all hover:border-violet-400/70 hover:bg-[#191926] disabled:opacity-50"
-        >
-          <Gift className="size-4 text-violet-400" />
-          {copied ? "Lien copié !" : "Copier mon lien d'invitation"}
-        </button>
+        <div className="mt-4 flex flex-col gap-2">
+          <button
+            type="button"
+            onClick={copyInvite}
+            disabled={!inviteUrl}
+            className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-[#3E3E4E] bg-[#12121B] px-4 py-2.5 text-sm font-semibold text-white transition-all hover:border-violet-400/70 hover:bg-[#191926] disabled:opacity-50"
+          >
+            <Gift className="size-4 text-violet-400" />
+            {copied ? "Lien copié !" : "Copier mon lien d'invitation"}
+          </button>
+          <button
+            type="button"
+            onClick={shareInvite}
+            disabled={!inviteUrl}
+            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-violet-500 to-blue-500 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_0_20px_rgba(139,92,246,0.25)] transition-all hover:from-violet-400 hover:to-blue-400 disabled:opacity-50"
+          >
+            <Share2 className="size-4" />
+            Partager mon lien d&apos;invitation
+          </button>
+        </div>
       </div>
 
-      {/* Toast copie */}
+      {/* Toast copie / partage */}
       <AnimatePresence>
         {copied && (
           <motion.div
@@ -209,6 +242,20 @@ export default function GroupDetailView({
             <span className="flex items-center gap-2 whitespace-nowrap rounded-full border border-emerald-500/30 bg-[#12121B] px-4 py-2.5 text-sm font-semibold text-emerald-300 shadow-[0_0_24px_rgba(16,185,129,0.25)]">
               <Gift className="size-4" />
               Lien d&apos;invitation copié !
+            </span>
+          </motion.div>
+        )}
+        {shared && (
+          <motion.div
+            initial={{ opacity: 0, y: 16, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 8, scale: 0.95 }}
+            transition={{ duration: 0.25 }}
+            className="fixed bottom-6 left-1/2 z-[60] -translate-x-1/2"
+          >
+            <span className="flex items-center gap-2 whitespace-nowrap rounded-full border border-blue-500/30 bg-[#12121B] px-4 py-2.5 text-sm font-semibold text-blue-300 shadow-[0_0_24px_rgba(59,130,246,0.25)]">
+              <Share2 className="size-4" />
+              Lien d&apos;invitation partagé !
             </span>
           </motion.div>
         )}

@@ -7,9 +7,14 @@ import DashboardShell, {
 export default async function DashboardPage({
   searchParams,
 }: {
-  searchParams: Promise<{ group?: string; badge?: string; paywall?: string }>;
+  searchParams: Promise<{
+    group?: string;
+    badge?: string;
+    paywall?: string;
+    checked?: string;
+  }>;
 }) {
-  const { group: initialGroupId, badge, paywall } = await searchParams;
+  const { group: initialGroupId, badge, paywall, checked } = await searchParams;
   const supabase = await createClient();
 
   const {
@@ -131,6 +136,7 @@ export default async function DashboardPage({
       initialGroupId={initialGroupId}
       plan={plan}
       badgeUnlocked={badge === "7"}
+      justChecked={checked === "1"}
       paywallRequested={paywall === "1"}
     />
   );

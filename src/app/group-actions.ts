@@ -231,6 +231,8 @@ export async function checkIn(formData: FormData) {
   revalidatePath(`/groups/${groupId}`);
   revalidatePath("/dashboard");
 
-  const query = badgeUnlocked ? `?badge=7&group=${groupId}` : `?group=${groupId}`;
+  const query = badgeUnlocked
+    ? `?badge=7&checked=1&group=${groupId}`
+    : `?checked=1&group=${groupId}`;
   redirect(`/dashboard${query}`);
 }
